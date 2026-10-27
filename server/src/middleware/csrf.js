@@ -1,0 +1,3 @@
+import crypto from 'node:crypto';
+export function csrfToken(req,res){if(!req.session.csrfToken)req.session.csrfToken=crypto.randomBytes(32).toString('hex');res.json({success:true,data:{csrfToken:req.session.csrfToken}});}
+export function requireCsrf(req,res,next){if(['GET','HEAD','OPTIONS'].includes(req.method))return next();const expected=req.session?.csrfToken;const supplied=req.get('X-CSRF-Token');if(!expected||!supplied||supplied.length!==expected.length||!/^[a-f0-9]+$/i.test(supplied)||!crypto.timingSafeEqual(Buffer.from(expected),Buffer.from(supplied)))return res.status(403).json({success:false,error:{code:'CSRF_INVALID',message:'Security token missing or invalid. Refresh and try again.'}});next();}

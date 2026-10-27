@@ -1,0 +1,2 @@
+export function requireAuth(req,res,next){if(!req.session?.userId)return res.status(401).json({success:false,error:{code:'UNAUTHENTICATED',message:'Please sign in.'}});next();}
+export function requireRole(...roles){return (req,res,next)=>{if(!req.session?.userId)return res.status(401).json({success:false,error:{code:'UNAUTHENTICATED',message:'Please sign in.'}});if(!roles.includes(req.session.role))return res.status(403).json({success:false,error:{code:'FORBIDDEN',message:'You do not have permission to perform this action.'}});next();};}
